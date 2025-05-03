@@ -1,0 +1,24 @@
+target
+.git
+.gitattibutes
+HELP.md
+mvnw
+mvnw.cmd
+Dockerfile
+
+# Build tools
+target/
+build/
+
+# IDEs
+.idea/
+*.iml
+
+# Sistema
+*.log
+*.tmp
+
+# Arquivos sensíveis (caso você use .env, chaves, etc)
+.env
+*.key
+*.pem

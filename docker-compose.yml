@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  db:
+    image: postgres
+    networks:
+      - ecommerce-backend
+    volumes:
+      - ecommerce-data
+  back:
+    build: ./ecommerce-back
+    depends_on:
+      - db
+    networks:
+      - ecommerce-backend
+  front:
+    build: ./ecommerce-front
+    depends_on:
+      - back
+    networks:
+      - ecommerce-backend
+      - ecommerce-frontend
+  proxy:
+    image: nginx:alpine
+    depends_on:
+      - back
+      - front
+    ports:
+      - "8080:80"
+    networks:
+      - ecommerce-backend
+      - ecommerce-frontend
+    
+networks:
+  ecommerce-backend:
+  ecommerce-frontend:
+
+volumes:
+  ecommerce-data:/var/lib/postgresql/data
