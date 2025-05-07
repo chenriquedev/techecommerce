@@ -1,7 +1,8 @@
 ## Inicio da Sprint 2/05 final da sprint 16/05
 
 ## 📋 Backlog
-- [ ] Listar produtos por Id
+- [ ] Implementar o model mapper 
+   - [ ] verificar como ignorar campos para melhor conversão
 - [ ] Listar produtos por nome
 - [ ] Listar produtos por categoria
 - [ ] Filtrar por faixa de preço
@@ -10,7 +11,7 @@
 - [ ] Implementar Spring Security com JWT 
 
 ## 🚧 Em andamento
-<!-- Mova as tarefas aqui conforme começar -->
+- [ ] Listar produtos por Id
 
 
 ## ✅ Concluído
