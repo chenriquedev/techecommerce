@@ -1,7 +1,10 @@
 package com.henrique.ecommerce_back.controler;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +26,12 @@ public class ProductController {
     public ResponseEntity<PaginatedResponseDto<ProductDto>> getAllProducts(PageDTO page) {
         PaginatedResponseDto<ProductDto> products = productService.getAllProducts(page);
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable UUID id) {
+        ProductDto product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 
 }

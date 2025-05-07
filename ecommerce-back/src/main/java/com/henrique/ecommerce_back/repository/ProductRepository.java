@@ -1,5 +1,6 @@
 package com.henrique.ecommerce_back.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -14,4 +15,6 @@ import com.henrique.ecommerce_back.model.entity.Product;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     @EntityGraph(attributePaths = "category")
     Page<Product> findAll(Pageable page);
+
+    Optional<Product> getProductById(UUID id);
 }

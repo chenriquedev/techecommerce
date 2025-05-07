@@ -1,9 +1,14 @@
 package com.henrique.ecommerce_back.service.impl;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.henrique.ecommerce_back.exceptions.ArgumentInvalidException;
+import com.henrique.ecommerce_back.exceptions.ProductNotFoundException;
 import com.henrique.ecommerce_back.model.dto.PageDTO;
 import com.henrique.ecommerce_back.model.dto.PaginatedResponseDto;
 import com.henrique.ecommerce_back.model.dto.ProductDto;
@@ -35,8 +40,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void getProductById() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ProductDto getProductById(UUID id) {
+        if (id == null) {
+            throw new ArgumentInvalidException("Product doesn't exist");
+        }
+
+        return productRepository.getProductById(id).map(productMapper::entityToDto)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found", HttpStatus.NOT_FOUND));
     }
 
     @Override
