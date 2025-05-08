@@ -1,26 +1,26 @@
 package com.henrique.ecommerce_back.controler;
 
-import java.util.UUID;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.henrique.ecommerce_back.model.dto.FilterProductDto;
 import com.henrique.ecommerce_back.model.dto.PageDTO;
 import com.henrique.ecommerce_back.model.dto.PaginatedResponseDto;
 import com.henrique.ecommerce_back.model.dto.ProductDto;
-import com.henrique.ecommerce_back.service.ProductService;
+import com.henrique.ecommerce_back.service.storefront.ProductStorefrontService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductStorefrontController {
 
-    private final ProductService productService;
+    private final ProductStorefrontService productService;
 
     @GetMapping
     public ResponseEntity<PaginatedResponseDto<ProductDto>> getAllProducts(PageDTO page) {
@@ -29,8 +29,15 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable UUID id) {
+    public ResponseEntity<ProductDto> getProductById(@PathVariable String id) {
         ProductDto product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<PaginatedResponseDto<ProductDto>> getProductsByFilter(@ModelAttribute PageDTO pageDTO,
+            @ModelAttribute FilterProductDto filterProductDto) {
+        PaginatedResponseDto<ProductDto> product = productService.filterProducts(filterProductDto, pageDTO);
         return ResponseEntity.ok(product);
     }
 

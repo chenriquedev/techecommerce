@@ -30,9 +30,10 @@ public class Product {
     private String images;
     private BigDecimal price;
     private Integer pixDiscount;
-    private Integer quantity;
+    private Integer stock;
     private Integer salesQuantity;
     private Boolean onSale;
+    private String brand;
     private BigDecimal promotionalPrice;
     @ManyToOne
     @JoinColumn(name = "category_id")
