@@ -1,15 +1,23 @@
 package com.henrique.ecommerce_back.service.management;
 
-import com.henrique.ecommerce_back.model.dto.ProductDto;
+import java.util.UUID;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.henrique.ecommerce_back.model.dto.ProductDTO;
 
 public interface ProductManagementService {
-    ProductDto newProduct(ProductDto productDto);
+    ProductDTO newProduct(ProductDTO productDto);
 
-    void deleteProduct();
+    void addProductImage(UUID productId, MultipartFile[] files);
+    
+    void removeProductImage(UUID productId, String imageName);
 
-    void editProduct();
+    void deleteProduct(UUID productId);
 
-    void increaseStock();
+    void editProduct(UUID productId, ProductDTO productDto);
 
-    void decreaseStock();
+    void increaseStock(UUID productId, Integer quantity);
+
+    void decreaseStock(UUID productId, Integer quantity);
 }

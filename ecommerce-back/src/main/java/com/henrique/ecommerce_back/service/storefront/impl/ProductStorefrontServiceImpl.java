@@ -4,17 +4,20 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.henrique.ecommerce_back.exceptions.ArgumentInvalidException;
 import com.henrique.ecommerce_back.exceptions.ProductNotFoundException;
-import com.henrique.ecommerce_back.model.dto.FilterProductDto;
+import com.henrique.ecommerce_back.model.dto.FilterProductDTO;
 import com.henrique.ecommerce_back.model.dto.PageDTO;
-import com.henrique.ecommerce_back.model.dto.PaginatedResponseDto;
-import com.henrique.ecommerce_back.model.dto.ProductDto;
+import com.henrique.ecommerce_back.model.dto.PaginatedResponseDTO;
+import com.henrique.ecommerce_back.model.dto.ProductDTO;
+import com.henrique.ecommerce_back.model.entity.Product;
 import com.henrique.ecommerce_back.model.mapper.ProductMapper;
 import com.henrique.ecommerce_back.repository.ProductRepository;
+import com.henrique.ecommerce_back.repository.specifications.ProductSpecifications;
 import com.henrique.ecommerce_back.service.storefront.ProductStorefrontService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,21 +30,18 @@ public class ProductStorefrontServiceImpl implements ProductStorefrontService {
     private final ProductMapper productMapper;
 
     @Override
-    public PaginatedResponseDto<ProductDto> getAllProducts(PageDTO page) {
+    public PaginatedResponseDTO<ProductDTO> getAllProducts(PageDTO page, Boolean isActive) {
         page.sanitizePageParameters();
-        Page<ProductDto> products = productRepository.findAll(PageRequest.of(page.getPage(), page.getSize()))
+        Specification<Product> specs = ProductSpecifications.activeProducts(isActive);
+        Page<ProductDTO> products = productRepository
+                .findAll(specs, PageRequest.of(page.getPage(), page.getSize()))
                 .map(productMapper::entityToDto);
-        PaginatedResponseDto<ProductDto> response = new PaginatedResponseDto<>(
-                products.getContent(),
-                products.getSize(),
-                products.getNumber(),
-                products.getTotalElements());
-
-        return response;
+                System.out.println(products.getContent());
+        return PaginatedResponseDTO.fromPage(products);
     }
 
     @Override
-    public ProductDto getProductById(String id) {
+    public ProductDTO getProductById(String id) {
         try {
             UUID productId = UUID.fromString(id);
             return productRepository.findById(productId).map(productMapper::entityToDto)
@@ -52,24 +52,18 @@ public class ProductStorefrontServiceImpl implements ProductStorefrontService {
     }
 
     @Override
-    public PaginatedResponseDto<ProductDto> filterProducts(FilterProductDto filterProductDto, PageDTO page) {
+    public PaginatedResponseDTO<ProductDTO> filterProducts(FilterProductDTO filterProductDto, PageDTO page) {
         page.sanitizePageParameters();
         String namePattern = filterProductDto.getName() == null ? null : "%" + filterProductDto.getName() + "%";
-        Page<ProductDto> products = productRepository.filterProducts(
+        Page<ProductDTO> products = productRepository.filterProducts(
                 namePattern,
                 filterProductDto.getCategory(),
-                filterProductDto.getOnSale(),
+                // filterProductDto.getOnSale(),
                 filterProductDto.getPriceMin(),
                 filterProductDto.getPriceMax(),
                 filterProductDto.getBrand(),
                 PageRequest.of(page.getPage(), page.getSize())).map(productMapper::entityToDto);
 
-        PaginatedResponseDto<ProductDto> response = new PaginatedResponseDto<>(
-                products.getContent(),
-                products.getSize(),
-                products.getNumber(),
-                products.getTotalElements());
-
-        return response;
+        return PaginatedResponseDTO.fromPage(products);
     }
 }

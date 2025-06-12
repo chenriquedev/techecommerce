@@ -29,6 +29,7 @@ public class Category {
     private String name;
     private String image;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @lombok.ToString.Exclude
     private List<Product> products;
     @ManyToOne
     @JoinColumn(name = "parent_category_id")

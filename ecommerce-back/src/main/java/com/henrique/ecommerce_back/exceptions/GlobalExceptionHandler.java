@@ -44,4 +44,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleImageNotFoundException(
+            ImageNotFoundException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), ex.getStatus().value(), null);
+        return new ResponseEntity<>(responseDto, ex.getStatus());
+    }
+
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<ResponseDTO> handleStorageException(
+            StorageException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), ex.getStatus().value(), null);
+        return new ResponseEntity<>(responseDto, ex.getStatus());
+    }
+
 }

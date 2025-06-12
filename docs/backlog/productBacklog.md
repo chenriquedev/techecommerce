@@ -3,11 +3,11 @@
 - [x] Listagem de produtos
     - [x] todos os produtos paginados
     - [x] e se vier size -1 
-- [ ] Filtragem de produtos @ModelAttibute
-    - [ ] Nome
-    - [ ] Categoria
-    - [ ] Faixa de preço
-    - [ ] Promoção
+- [x] Filtragem de produtos 
+    - [x] Nome
+    - [x] Categoria
+    - [x] Faixa de preço
+    - [x] Promoção
 ---
 - [ ] Cadastro de usuário
 - [ ] Login de usuário

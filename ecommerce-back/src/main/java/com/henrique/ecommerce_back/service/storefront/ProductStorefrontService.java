@@ -1,15 +1,15 @@
 package com.henrique.ecommerce_back.service.storefront;
 
 
-import com.henrique.ecommerce_back.model.dto.FilterProductDto;
+import com.henrique.ecommerce_back.model.dto.FilterProductDTO;
 import com.henrique.ecommerce_back.model.dto.PageDTO;
-import com.henrique.ecommerce_back.model.dto.PaginatedResponseDto;
-import com.henrique.ecommerce_back.model.dto.ProductDto;
+import com.henrique.ecommerce_back.model.dto.PaginatedResponseDTO;
+import com.henrique.ecommerce_back.model.dto.ProductDTO;
 
 public interface ProductStorefrontService {
-    PaginatedResponseDto<ProductDto> getAllProducts(PageDTO page);
+    PaginatedResponseDTO<ProductDTO> getAllProducts(PageDTO page, Boolean isActive);
 
-    ProductDto getProductById(String Id);
+    ProductDTO getProductById(String Id);
 
-    PaginatedResponseDto<ProductDto> filterProducts(FilterProductDto filterProductDto, PageDTO pageDTO);
+    PaginatedResponseDTO<ProductDTO> filterProducts(FilterProductDTO filterProductDto, PageDTO pageDTO);
 }

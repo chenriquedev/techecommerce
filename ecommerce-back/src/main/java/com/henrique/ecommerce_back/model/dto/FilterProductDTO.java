@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilterProductDto {
+public class FilterProductDTO {
     private String name;
     private String brand;
     private String category;
     private BigDecimal priceMin;
     private BigDecimal priceMax;
-    private Boolean onSale;
+    // private Boolean onSale;
 }
