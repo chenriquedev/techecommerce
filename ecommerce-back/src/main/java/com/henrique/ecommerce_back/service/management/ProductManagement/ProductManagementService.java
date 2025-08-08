@@ -1,4 +1,4 @@
-package com.henrique.ecommerce_back.service.management;
+package com.henrique.ecommerce_back.service.management.ProductManagement;
 
 import java.util.UUID;
 

@@ -1,5 +1,8 @@
 package com.henrique.ecommerce_back.model.mapper;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.henrique.ecommerce_back.model.dto.CategoryDTO;
@@ -8,6 +11,10 @@ import com.henrique.ecommerce_back.model.entity.Product;
 
 @Component
 public class ProductMapper {
+
+    @Value("${default-image}")
+    private String defaultImage;
+
     public ProductDTO entityToDto(Product product) {
         ProductDTO productDto = new ProductDTO();
         System.out.println(product);
@@ -17,7 +24,9 @@ public class ProductMapper {
         productDto.setPrice(product.getPrice());
         productDto.setPromotionalPrice(product.getPromotionalPrice());
         productDto.setIsActive(product.getIsActive());
-        productDto.setImages(product.getImages());
+        productDto.setImages(product.getImages() == null || product.getImages().isEmpty()
+                ? List.of("/product-images/" + defaultImage)
+                : product.getImages().stream().map(name -> "/product-images/" + name).toList());
         if (product.getStock() != null) {
             productDto.setStock(product.getStock().getQuantity());
         }
@@ -41,7 +50,14 @@ public class ProductMapper {
         product.setPrice(productDto.getPrice());
         product.setPromotionalPrice(productDto.getPromotionalPrice());
         product.setIsActive(productDto.getIsActive());
-        product.setImages(productDto.getImages());
+        product.setImages(
+                productDto.getImages() == null
+                || productDto.getImages().isEmpty()
+                        || productDto.getImages().stream().anyMatch(item -> item.contains("default"))
+                                ? List.of()
+                                : productDto.getImages().stream()
+                                        .map(url -> url.replace("/product-images/", ""))
+                                        .toList());
         // product.setSalesQuantity(productDto.getSalesQuantity());
         // product.setPixDiscount(productDto.getPixDiscount());
         // product.setOnSale(productDto.getOnSale());

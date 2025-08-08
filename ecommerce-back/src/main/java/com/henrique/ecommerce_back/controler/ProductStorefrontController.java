@@ -17,7 +17,7 @@ import com.henrique.ecommerce_back.service.storefront.ProductStorefrontService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductStorefrontController {
 

@@ -58,4 +58,25 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseDto, ex.getStatus());
     }
 
+    @ExceptionHandler(BrandAlreadyExistsException.class)
+    public ResponseEntity<ResponseDTO> handleBrandExistsException(
+            BrandAlreadyExistsException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.CONFLICT.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BrandNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleBrandNotFoundException(
+            BrandNotFoundException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidImageTypeException.class)
+    public ResponseEntity<ResponseDTO> handleInvalidImageTypeException(
+            InvalidImageTypeException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+    }
+
 }

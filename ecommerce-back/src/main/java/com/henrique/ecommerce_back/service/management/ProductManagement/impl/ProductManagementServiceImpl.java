@@ -1,4 +1,4 @@
-package com.henrique.ecommerce_back.service.management.impl;
+package com.henrique.ecommerce_back.service.management.ProductManagement.impl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ import com.henrique.ecommerce_back.model.mapper.ProductMapper;
 import com.henrique.ecommerce_back.repository.CategoryRepository;
 import com.henrique.ecommerce_back.repository.ProductRepository;
 import com.henrique.ecommerce_back.repository.StockRepository;
-import com.henrique.ecommerce_back.service.management.ProductManagementService;
+import com.henrique.ecommerce_back.service.management.ProductManagement.ProductManagementService;
 import com.henrique.ecommerce_back.service.management.StockManagement.StockMovementService;
 
 import jakarta.transaction.Transactional;
@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProductManagementServiceImpl implements ProductManagementService {
-    @Value("${image.path}")
+    @Value("${product.image.path}")
     private String imagePath;
 
     private final ProductMapper productMapper;
@@ -49,7 +49,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
             throws IllegalStateException {
         Optional<Category> category = categoryRepository.findById(productDto.getCategory().getId());
         if (category.isEmpty()) {
-            throw new ArgumentInvalidException("Category doesn't exists.", HttpStatus.BAD_REQUEST);
+            throw new ArgumentInvalidException("Category doesn't exists.", HttpStatus.NOT_FOUND);
         }
         Product product = productMapper.dtoToEntity(productDto);
         product.setIsActive(true);
@@ -77,7 +77,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
                 product.getImages().add(filePath);
                 try {
-                    Path path = Paths.get("images");
+                    Path path = Paths.get(imagePath);
                     if (!Files.exists(path)) {
                         Files.createDirectories(path);
                     }

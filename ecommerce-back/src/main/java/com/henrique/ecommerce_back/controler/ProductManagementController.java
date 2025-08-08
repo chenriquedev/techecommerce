@@ -16,13 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.henrique.ecommerce_back.model.dto.ProductDTO;
 import com.henrique.ecommerce_back.model.dto.ResponseDTO;
-import com.henrique.ecommerce_back.service.management.ProductManagementService;
+import com.henrique.ecommerce_back.service.management.ProductManagement.ProductManagementService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/admin/products")
+@RequestMapping("/admin/products")
 @RequiredArgsConstructor
 public class ProductManagementController {
 
@@ -37,7 +37,7 @@ public class ProductManagementController {
     }
 
     @PostMapping(path = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<ResponseDTO> uploadImage(@RequestParam(required = true) UUID productId,
+    public ResponseEntity<ResponseDTO> uploadProductImage(@RequestParam(required = true) UUID productId,
             @RequestParam(name = "files", required = true) MultipartFile[] files) {
 
         productManagementService.addProductImage(productId, files);

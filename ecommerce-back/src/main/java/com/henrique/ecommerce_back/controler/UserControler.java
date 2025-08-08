@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserControler {
 
