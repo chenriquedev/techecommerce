@@ -18,16 +18,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ResponseDTO> handleNotFound(ProductNotFoundException ex) {
-        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), ex.getStatus().value(), null);
-        return new ResponseEntity<>(responseDto, ex.getStatus());
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 
     }
 
     @ExceptionHandler(ArgumentInvalidException.class)
     public ResponseEntity<ResponseDTO> handleArgumentInvalidException(ArgumentInvalidException ex) {
 
-        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), ex.getStatus().value(), null);
-        return new ResponseEntity<>(responseDto, ex.getStatus());
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -47,15 +47,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ImageNotFoundException.class)
     public ResponseEntity<ResponseDTO> handleImageNotFoundException(
             ImageNotFoundException ex) {
-        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), ex.getStatus().value(), null);
-        return new ResponseEntity<>(responseDto, ex.getStatus());
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ResponseDTO> handleStorageException(
             StorageException ex) {
-        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), ex.getStatus().value(), null);
-        return new ResponseEntity<>(responseDto, ex.getStatus());
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(BrandAlreadyExistsException.class)
@@ -75,6 +75,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidImageTypeException.class)
     public ResponseEntity<ResponseDTO> handleInvalidImageTypeException(
             InvalidImageTypeException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BrandImageNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleBrandImageNotFoundException(
+            BrandImageNotFoundException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleCategoryNotFoundException(
+            CategoryNotFoundException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+    }
+
+      @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ResponseDTO> handleInsufficientStockException(
+            InsufficientStockException ex) {
         ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
         return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
     }

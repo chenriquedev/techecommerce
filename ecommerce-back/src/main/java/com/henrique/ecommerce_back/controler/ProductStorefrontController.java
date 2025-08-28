@@ -1,5 +1,7 @@
 package com.henrique.ecommerce_back.controler;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,7 +32,7 @@ public class ProductStorefrontController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable String id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable UUID id) {
         ProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }

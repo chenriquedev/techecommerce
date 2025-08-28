@@ -9,11 +9,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.henrique.ecommerce_back.exceptions.BrandAlreadyExistsException;
+import com.henrique.ecommerce_back.exceptions.BrandImageNotFoundException;
 import com.henrique.ecommerce_back.exceptions.BrandNotFoundException;
 import com.henrique.ecommerce_back.exceptions.StorageException;
 import com.henrique.ecommerce_back.model.dto.BrandDTO;
@@ -80,7 +80,7 @@ public class BrandServiceImpl implements BrandService {
                 deleteBrandImageFile(oldImagePath);
             }
         } catch (Exception e) {
-            throw new StorageException("Error to save image", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new StorageException("Error to save image");
         }
     }
 
@@ -88,7 +88,7 @@ public class BrandServiceImpl implements BrandService {
     public void removeBrandImage(UUID brandID, String imageName) {
         Brand brand = getBrandOrThrow(brandID);
         if (brand.getLogo() == null || !brand.getLogo().equals(imageName)) {
-            throw new StorageException("Error to delete brand image", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new BrandImageNotFoundException("Brand image doesn't exist");
         }
         brand.setLogo(null);
         brandRepository.saveAndFlush(brand);
@@ -110,7 +110,7 @@ public class BrandServiceImpl implements BrandService {
             file.transferTo(path.resolve(fileName));
             return fileName;
         } catch (IOException e) {
-            throw new StorageException("Error saving image '" + fileName + "'", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new StorageException("Error saving image '" + fileName + "'");
         }
     }
 
@@ -119,8 +119,7 @@ public class BrandServiceImpl implements BrandService {
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new StorageException("Error to delete image '" + imageName + "'" + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new StorageException("Error to delete image '" + imageName + "'" + e.getMessage());
         }
     }
 

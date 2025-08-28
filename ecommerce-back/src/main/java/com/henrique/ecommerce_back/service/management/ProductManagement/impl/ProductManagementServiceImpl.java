@@ -9,12 +9,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.henrique.ecommerce_back.exceptions.ArgumentInvalidException;
+import com.henrique.ecommerce_back.exceptions.CategoryNotFoundException;
 import com.henrique.ecommerce_back.exceptions.ImageNotFoundException;
+import com.henrique.ecommerce_back.exceptions.InsufficientStockException;
+import com.henrique.ecommerce_back.exceptions.ProductNotFoundException;
 import com.henrique.ecommerce_back.exceptions.StorageException;
 import com.henrique.ecommerce_back.model.dto.ProductDTO;
 import com.henrique.ecommerce_back.model.entity.Category;
@@ -49,7 +50,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
             throws IllegalStateException {
         Optional<Category> category = categoryRepository.findById(productDto.getCategory().getId());
         if (category.isEmpty()) {
-            throw new ArgumentInvalidException("Category doesn't exists.", HttpStatus.NOT_FOUND);
+            throw new CategoryNotFoundException("Category doesn't exists.");
         }
         Product product = productMapper.dtoToEntity(productDto);
         product.setIsActive(true);
@@ -96,7 +97,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
         Product product = getProductOrThrow(productId);
         Boolean imageExists = product.getImages().contains(imageName);
         if (!imageExists) {
-            throw new ImageNotFoundException("Image not found.", HttpStatus.NOT_FOUND);
+            throw new ImageNotFoundException("Image not found.");
         }
         Path path = Paths.get(imagePath + "/" + imageName);
 
@@ -105,8 +106,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
             product.getImages().remove(imageName);
             productRepository.save(product);
         } catch (IOException e) {
-            throw new StorageException("Error to delete image '" + imageName + "'" + e,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new StorageException("Error to delete image '" + imageName + "'" + e);
         }
     }
 
@@ -135,7 +135,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     @Override
     public void increaseStock(UUID productId, Integer quantity) {
         if (quantity <= 0) {
-            throw new ArgumentInvalidException("Quantity must be greater than zero", HttpStatus.BAD_REQUEST);
+            throw new InsufficientStockException("Quantity must be greater than zero");
         }
         Product product = getProductOrThrow(productId);
         Stock stock = product.getStock();
@@ -147,12 +147,12 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     @Override
     public void decreaseStock(UUID productId, Integer quantity) {
         if (quantity <= 0) {
-            throw new ArgumentInvalidException("Quantity must be greater than zero", HttpStatus.BAD_REQUEST);
+            throw new InsufficientStockException("Quantity must be greater than zero");
         }
         Product product = getProductOrThrow(productId);
         Stock stock = product.getStock();
         if (stock.getQuantity() < quantity) {
-            throw new ArgumentInvalidException("Insufficient stock", HttpStatus.BAD_REQUEST);
+            throw new InsufficientStockException("Insufficient stock");
         }
         stock.setQuantity(stock.getQuantity() - quantity);
         stockMovementService.registerMovement(product, quantity, StockChangeReason.INVENTORY_ADJUSTMENT);
@@ -161,7 +161,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     private Product getProductOrThrow(UUID productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new ArgumentInvalidException("Product not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
     private Product changeNonNullFields(Product product, ProductDTO productDto) {

@@ -5,10 +5,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.henrique.ecommerce_back.exceptions.ArgumentInvalidException;
 import com.henrique.ecommerce_back.exceptions.ProductNotFoundException;
 import com.henrique.ecommerce_back.model.dto.FilterProductDTO;
 import com.henrique.ecommerce_back.model.dto.PageDTO;
@@ -36,19 +34,15 @@ public class ProductStorefrontServiceImpl implements ProductStorefrontService {
         Page<ProductDTO> products = productRepository
                 .findAll(specs, PageRequest.of(page.getPage(), page.getSize()))
                 .map(productMapper::entityToDto);
-                System.out.println(products.getContent());
+        System.out.println(products.getContent());
         return PaginatedResponseDTO.fromPage(products);
     }
 
     @Override
-    public ProductDTO getProductById(String id) {
-        try {
-            UUID productId = UUID.fromString(id);
-            return productRepository.findById(productId).map(productMapper::entityToDto)
-                    .orElseThrow(() -> new ProductNotFoundException("Product not found", HttpStatus.NOT_FOUND));
-        } catch (IllegalArgumentException e) {
-            throw new ArgumentInvalidException("Product doesn't exist", HttpStatus.NOT_FOUND);
-        }
+    public ProductDTO getProductById(UUID id) {
+        return productRepository.findById(id).map(productMapper::entityToDto)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
     }
 
     @Override
