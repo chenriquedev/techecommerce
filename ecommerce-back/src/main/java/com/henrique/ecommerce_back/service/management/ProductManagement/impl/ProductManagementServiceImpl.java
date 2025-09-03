@@ -1,9 +1,5 @@
 package com.henrique.ecommerce_back.service.management.ProductManagement.impl;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,7 +12,6 @@ import com.henrique.ecommerce_back.exceptions.CategoryNotFoundException;
 import com.henrique.ecommerce_back.exceptions.ImageNotFoundException;
 import com.henrique.ecommerce_back.exceptions.InsufficientStockException;
 import com.henrique.ecommerce_back.exceptions.ProductNotFoundException;
-import com.henrique.ecommerce_back.exceptions.StorageException;
 import com.henrique.ecommerce_back.model.dto.ProductDTO;
 import com.henrique.ecommerce_back.model.entity.Category;
 import com.henrique.ecommerce_back.model.entity.Product;
@@ -28,6 +23,8 @@ import com.henrique.ecommerce_back.repository.ProductRepository;
 import com.henrique.ecommerce_back.repository.StockRepository;
 import com.henrique.ecommerce_back.service.management.ProductManagement.ProductManagementService;
 import com.henrique.ecommerce_back.service.management.StockManagement.StockMovementService;
+import com.henrique.ecommerce_back.utils.ImageFileManager;
+import com.henrique.ecommerce_back.utils.ImageFileManagerFactory;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +40,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     private final CategoryRepository categoryRepository;
     private final StockMovementService stockMovementService;
     private final StockRepository stockRepository;
+    private final ImageFileManagerFactory imageFileManagerFactory;
 
     @Override
     @Transactional
@@ -67,26 +65,15 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public void addProductImage(UUID productId, MultipartFile[] files) {
+        ImageFileManager manager = imageFileManagerFactory.create(imagePath);
         Product product = getProductOrThrow(productId);
         if (product.getImages() == null) {
             product.setImages(new ArrayList<>());
         }
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
-                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                String filePath = fileName;
-
+                String filePath = manager.storeImage(file);
                 product.getImages().add(filePath);
-                try {
-                    Path path = Paths.get(imagePath);
-                    if (!Files.exists(path)) {
-                        Files.createDirectories(path);
-                    }
-                    file.transferTo(path.resolve(fileName));
-                } catch (IOException e) {
-                    System.err.println("Error saving file: " + e.getMessage());
-                }
-
             }
         }
         productRepository.save(product);
@@ -94,20 +81,15 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public void removeProductImage(UUID productId, String imageName) {
+        ImageFileManager manager = imageFileManagerFactory.create(imagePath);
         Product product = getProductOrThrow(productId);
         Boolean imageExists = product.getImages().contains(imageName);
         if (!imageExists) {
             throw new ImageNotFoundException("Image not found.");
         }
-        Path path = Paths.get(imagePath + "/" + imageName);
-
-        try {
-            Files.deleteIfExists(path);
-            product.getImages().remove(imageName);
-            productRepository.save(product);
-        } catch (IOException e) {
-            throw new StorageException("Error to delete image '" + imageName + "'" + e);
-        }
+        manager.deleteImageFile(imageName);
+        product.getImages().remove(imageName);
+        productRepository.save(product);
     }
 
     @Override

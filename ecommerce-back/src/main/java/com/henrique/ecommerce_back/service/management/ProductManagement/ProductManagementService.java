@@ -10,7 +10,7 @@ public interface ProductManagementService {
     ProductDTO newProduct(ProductDTO productDto);
 
     void addProductImage(UUID productId, MultipartFile[] files);
-    
+
     void removeProductImage(UUID productId, String imageName);
 
     void deleteProduct(UUID productId);

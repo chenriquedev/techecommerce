@@ -93,11 +93,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }
 
-      @ExceptionHandler(InsufficientStockException.class)
+    @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ResponseDTO> handleInsufficientStockException(
             InsufficientStockException ex) {
         ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
         return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ResponseEntity<ResponseDTO> handleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoryImageNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleCategoryImageNotFoundException(CategoryImageNotFoundException ex) {
+        ResponseDTO responseDto = new ResponseDTO(ex.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }
 
 }

@@ -33,5 +33,5 @@ public class Category {
     private List<Product> products;
     @ManyToOne
     @JoinColumn(name = "parent_category_id")
-    private Category subCategory;
+    private Category parentCategory;
 }

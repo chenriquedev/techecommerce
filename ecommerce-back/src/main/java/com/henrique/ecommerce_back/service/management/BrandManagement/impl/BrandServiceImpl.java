@@ -1,9 +1,5 @@
 package com.henrique.ecommerce_back.service.management.BrandManagement.impl;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +18,8 @@ import com.henrique.ecommerce_back.model.mapper.BrandMapper;
 import com.henrique.ecommerce_back.repository.BrandRepository;
 import com.henrique.ecommerce_back.service.management.BrandManagement.BrandService;
 import com.henrique.ecommerce_back.utils.AnalyseImageType;
+import com.henrique.ecommerce_back.utils.ImageFileManager;
+import com.henrique.ecommerce_back.utils.ImageFileManagerFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +33,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final AnalyseImageType analyseImageType;
+    private final ImageFileManagerFactory imageFileManagerFactory;
 
     @Override
     public List<BrandDTO> getAllBrands() {
@@ -64,6 +63,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public void addBrandImage(UUID brandID, MultipartFile file) {
+        ImageFileManager manager = imageFileManagerFactory.create(brandImagePath);
         Brand brand = getBrandOrThrow(brandID);
         String oldImagePath = null;
 
@@ -73,11 +73,11 @@ public class BrandServiceImpl implements BrandService {
             if (brand.getLogo() != null && !brand.getLogo().isBlank()) {
                 oldImagePath = brand.getLogo();
             }
-            String fileName = storeBrandImage(file);
+            String fileName = manager.storeImage(file);
             brand.setLogo(fileName);
             brandRepository.saveAndFlush(brand);
             if (oldImagePath != null) {
-                deleteBrandImageFile(oldImagePath);
+                manager.deleteImageFile(oldImagePath);
             }
         } catch (Exception e) {
             throw new StorageException("Error to save image");
@@ -86,41 +86,18 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public void removeBrandImage(UUID brandID, String imageName) {
+        ImageFileManager manager = imageFileManagerFactory.create(brandImagePath);
         Brand brand = getBrandOrThrow(brandID);
         if (brand.getLogo() == null || !brand.getLogo().equals(imageName)) {
             throw new BrandImageNotFoundException("Brand image doesn't exist");
         }
         brand.setLogo(null);
         brandRepository.saveAndFlush(brand);
-        deleteBrandImageFile(imageName);
+        manager.deleteImageFile(imageName);
     }
 
     private Brand getBrandOrThrow(UUID BrandID) {
         return brandRepository.findById(BrandID)
                 .orElseThrow(() -> new BrandNotFoundException("Brand not found"));
     }
-
-    private String storeBrandImage(MultipartFile file) {
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path path = Paths.get(brandImagePath);
-        try {
-            if (!Files.exists(path)) {
-                Files.createDirectories(path);
-            }
-            file.transferTo(path.resolve(fileName));
-            return fileName;
-        } catch (IOException e) {
-            throw new StorageException("Error saving image '" + fileName + "'");
-        }
-    }
-
-    private void deleteBrandImageFile(String imageName) {
-        Path path = Paths.get(brandImagePath + "/" + imageName);
-        try {
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            throw new StorageException("Error to delete image '" + imageName + "'" + e.getMessage());
-        }
-    }
-
 }
