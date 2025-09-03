@@ -28,7 +28,7 @@ public class ProductManagementController {
 
     private final ProductManagementService productManagementService;
 
-    @PostMapping("/new-product")
+    @PostMapping()
     public ResponseEntity<ResponseDTO> addProduct(@RequestBody @Valid ProductDTO productDto,
             @RequestParam(name = "files", required = false) MultipartFile[] files) {
         ProductDTO product = productManagementService.newProduct(productDto);
@@ -36,22 +36,22 @@ public class ProductManagementController {
                 .body(new ResponseDTO("Product created successfully", HttpStatus.OK.value(), product));
     }
 
-    @PostMapping(path = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<ResponseDTO> uploadProductImage(@RequestParam(required = true) UUID productId,
+    @PostMapping(path = "/{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<ResponseDTO> uploadProductImage(@PathVariable UUID id,
             @RequestParam(name = "files", required = true) MultipartFile[] files) {
 
-        productManagementService.addProductImage(productId, files);
+        productManagementService.addProductImage(id, files);
         return ResponseEntity.ok()
                 .body(new ResponseDTO("Image Uploaded successfully.", HttpStatus.OK.value(), null));
     }
 
-    @DeleteMapping("/delete-image/{id}")
+    @DeleteMapping("/{id}/image")
     public ResponseEntity<ResponseDTO> deleteProductImage(@PathVariable UUID id, @RequestParam String name) {
         productManagementService.removeProductImage(id, name);
         return ResponseEntity.ok().body(new ResponseDTO("Image deleted successfully!", HttpStatus.OK.value(), null));
     }
 
-    @DeleteMapping("/delete-product/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteProduct(@PathVariable UUID id) {
         productManagementService.deleteProduct(id);
         return ResponseEntity.ok()
@@ -65,14 +65,14 @@ public class ProductManagementController {
                 .body(new ResponseDTO("Product edited successfully", HttpStatus.OK.value(), product));
     }
 
-    @PostMapping("/increase-stock/{id}")
+    @PutMapping("/{id}/stock/increase")
     public ResponseEntity<ResponseDTO> increaseStock(@PathVariable UUID id, @RequestParam Integer quantity) {
         productManagementService.increaseStock(id, quantity);
         return ResponseEntity.ok()
                 .body(new ResponseDTO("Stock increased successfully", HttpStatus.OK.value(), null));
     }
 
-    @PostMapping("/decrease-stock/{id}")
+    @PutMapping("/{id}/stock/decrease")
     public ResponseEntity<ResponseDTO> decreaseStock(@PathVariable UUID id, @RequestParam Integer quantity) {
         productManagementService.decreaseStock(id, quantity);
         return ResponseEntity.ok()

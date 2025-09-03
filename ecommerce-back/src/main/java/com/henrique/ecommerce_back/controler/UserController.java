@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class UserControler {
+public class UserController {
 
     @GetMapping
     public String getMethodName() {

@@ -22,7 +22,7 @@ import com.henrique.ecommerce_back.service.management.BrandManagement.BrandServi
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/brand")
+@RequestMapping("/admin/brands")
 @RequiredArgsConstructor
 public class BrandManagementController {
 
@@ -42,24 +42,24 @@ public class BrandManagementController {
         return ResponseEntity.ok().body(new ResponseDTO("Brand created sucessfully", HttpStatus.OK.value(), brand));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteBrand(@PathVariable UUID id) {
         brandService.deleteBrand(id);
         return ResponseEntity.ok().body(new ResponseDTO("Brand deleted sucessfully", HttpStatus.OK.value(), null));
     }
 
-    @PostMapping(path = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<ResponseDTO> uploadBrandImage(@RequestParam(required = true) UUID brandID,
+    @PostMapping(path = "/{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<ResponseDTO> uploadBrandImage(@PathVariable UUID id,
             @RequestParam(required = true) MultipartFile file) {
 
-        brandService.addBrandImage(brandID, file);
+        brandService.addBrandImage(id, file);
         return ResponseEntity.ok()
                 .body(new ResponseDTO("Image Uploaded successfully.", HttpStatus.OK.value(), null));
     }
 
-    @DeleteMapping("/delete-image/{brandID}")
-    public ResponseEntity<ResponseDTO> deleteBrandImage(@PathVariable UUID brandID, @RequestParam String name) {
-        brandService.removeBrandImage(brandID, name);
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<ResponseDTO> deleteBrandImage(@PathVariable UUID id, @RequestParam String name) {
+        brandService.removeBrandImage(id, name);
         return ResponseEntity.ok().body(new ResponseDTO("Image deleted successfully!", HttpStatus.OK.value(), null));
     }
 

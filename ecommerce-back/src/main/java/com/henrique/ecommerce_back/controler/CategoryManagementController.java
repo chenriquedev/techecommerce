@@ -20,7 +20,7 @@ import com.henrique.ecommerce_back.service.management.CategoryManagement.Categor
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/category")
+@RequestMapping("/admin/categories")
 @RequiredArgsConstructor
 public class CategoryManagementController {
 
@@ -33,22 +33,22 @@ public class CategoryManagementController {
 
     }
 
-     @PostMapping(path = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<ResponseDTO> uploadProductImage(@RequestParam(required = true) UUID categoryId,
+     @PostMapping(path = "/{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<ResponseDTO> uploadProductImage(@PathVariable UUID id,
             @RequestParam( required = true) MultipartFile file) {
 
-        categoryService.addCategoryImage(categoryId, file);
+        categoryService.addCategoryImage(id, file);
         return ResponseEntity.ok()
                 .body(new ResponseDTO("Image Uploaded successfully.", HttpStatus.OK.value(), null));
     }
 
-    @DeleteMapping("/delete-image/{id}")
+    @DeleteMapping("/{id}/image")
     public ResponseEntity<ResponseDTO> deleteProductImage(@PathVariable UUID id, @RequestParam String name) {
         categoryService.removeCategoryImage(id, name);
         return ResponseEntity.ok().body(new ResponseDTO("Image deleted successfully!", HttpStatus.OK.value(), null));
     }
 
-    @DeleteMapping("/delete-category/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteCategory(@PathVariable UUID id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok()
