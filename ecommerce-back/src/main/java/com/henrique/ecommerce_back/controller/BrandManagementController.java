@@ -1,4 +1,4 @@
-package com.henrique.ecommerce_back.controler;
+package com.henrique.ecommerce_back.controller;
 
 import java.util.List;
 import java.util.UUID;

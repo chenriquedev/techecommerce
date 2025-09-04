@@ -10,25 +10,32 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${product.image.path}")
-    private String productImagePath;
+        @Value("${product.image.path}")
+        private String productImagePath;
 
-    @Value("${brand.image.path}")
-    private String brandImagePath;
+        @Value("${brand.image.path}")
+        private String brandImagePath;
 
-    @Value("${default.image.path}")
-    private String defaultImagePath;
+        @Value("${category.image.path}")
+        private String categoryImagePath;
 
-    @Override
-    public void addResourceHandlers(
-            ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/product-images/**")
-                .addResourceLocations("file:" + Path.of(productImagePath).toAbsolutePath() + "/")
-                .addResourceLocations("file:" + Path.of(defaultImagePath).toAbsolutePath() + "/");
-                
-        registry.addResourceHandler("/brand-images/**")
-                .addResourceLocations("file:" + Path.of(brandImagePath).toAbsolutePath() + "/")
-                .addResourceLocations("file:" + Path.of(defaultImagePath).toAbsolutePath() + "/");
+        @Value("${default.image.path}")
+        private String defaultImagePath;
 
-    }
+        @Override
+        public void addResourceHandlers(
+                        ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/products-images/**")
+                                .addResourceLocations("file:" + Path.of(productImagePath).toAbsolutePath() + "/")
+                                .addResourceLocations("file:" + Path.of(defaultImagePath).toAbsolutePath() + "/");
+
+                registry.addResourceHandler("/brands-images/**")
+                                .addResourceLocations("file:" + Path.of(brandImagePath).toAbsolutePath() + "/")
+                                .addResourceLocations("file:" + Path.of(defaultImagePath).toAbsolutePath() + "/");
+
+                registry.addResourceHandler("/categories-images/**")
+                                .addResourceLocations("file:" + Path.of(categoryImagePath).toAbsolutePath() + "/")
+                                .addResourceLocations("file:" + Path.of(defaultImagePath).toAbsolutePath() + "/");
+
+        }
 }

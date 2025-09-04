@@ -25,7 +25,7 @@ public class StockMovement {
     @Min(value = 0, message = "Quantity changed must be a non-negative integer.")
     private Integer quantityChanged;
     private LocalDateTime movementAt;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private StockChangeReason reason;
     @ManyToOne
     @JoinColumn(name = "product_id")
